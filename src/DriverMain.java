@@ -11,46 +11,47 @@ public class DriverMain {
         System.out.println("PostFix Expression:"+postfix);
     }
 public static String infixToPostFix(String inp){
-        String postfix = new String();
+        String postfix = "";
         int precedenceCurr, precedenceTop;
-        char [] charArr = new char[inp.length()];
-        Stack<Character> stack = new Stack<Character>();
+        char [] charArr;
+        Stack<Character> stack = new Stack<>();
         charArr=inp.toCharArray();
-        for(int i =0; i<charArr.length;i++){
-            if(charArr[i] != ')') {
-                precedenceCurr = precedence(charArr[i]);
-                if(precedenceCurr == 0){
-                    postfix = postfix + charArr[i];
-                    continue;
+    for (char c : charArr) {
+        if (c != ')') {
+            precedenceCurr = precedence(c);
+            if (precedenceCurr == 0) {
+                postfix = postfix + c;
+                continue;
+            }
+            if (stack.isEmpty() || stack.peek() == '(') {
+                stack.push(c);
+            } else {
+                precedenceTop = precedence(stack.peek());
+                while (precedenceTop >= precedenceCurr && stack.peek() != '(') {
+                    postfix = postfix + stack.pop();
+                    if (!stack.isEmpty()) {
+                        precedenceTop = precedence(stack.peek());
+                    } else {
+                        break;
+                    }
+
                 }
-                if (stack.isEmpty()) {
-                    stack.push(charArr[i]);
+                stack.push(c);
+
+            }
+        } else {
+            while (stack.peek() != '(') {
+                if (!stack.isEmpty()) {
+                    postfix = postfix + stack.pop();
                 } else {
-                    precedenceTop = precedence(stack.peek());
-                    if(precedenceTop>precedenceCurr){
-                        postfix = postfix + stack.pop();
-                        stack.push(charArr[i]);
-                    }
-                    else{
-                        stack.push(charArr[i]);
-                    }
-
+                    System.out.println("Invalid Input, braces donot match");
+                    return ("INVALID INPUT");
                 }
-            }
-            else{
-                while(stack.peek()!='('){
-                    if(!stack.isEmpty()) {
-                        postfix = postfix + stack.pop();
-                    }
-                    else{
-                        System.out.println("Invalid Input, braces donot match");
-                        return("INVALID INPUT");
-                    }
 
-                }
-                stack.pop();
             }
+            stack.pop();
         }
+    }
         while(!stack.isEmpty()){
             postfix = postfix + stack.pop();
         }
@@ -77,3 +78,4 @@ public static String infixToPostFix(String inp){
 
 
 }
+//abcd^e-fgh*+^*+i-
